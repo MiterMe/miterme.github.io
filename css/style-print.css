@@ -1,0 +1,12 @@
+.NotationArea {
+    width: 800px;
+    margin: auto;
+    background-color: antiquewhite;
+    display: block;
+}
+
+.ControlArea {
+    width: 800px;
+    margin: auto;
+    display: none;
+}

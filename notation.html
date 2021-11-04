@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style-screen.css" , media="screen">
+    <link rel="stylesheet" href="css/style-print.css" , media="print">
+    <script src="js/abcjs-basic-min.js"></script>
+    <script src="js/tools.js"></script>
+    <script>
+        var args = Strings.tokv(location.href);
+        var worker = document.createElement('script');
+        worker.src = `./notation/${args.name}.js`;
+
+        worker.onload = function () {
+            makeNotation()
+            document.title = notation_title
+        }
+        document.head.appendChild(worker);
+
+
+        function makeNotation() {
+            var visualObj = ABCJS.renderAbc("notation", abcString, { responsive: "resize", oneSvgPerLine: true })[0];
+            var midiBuffer = new ABCJS.synth.CreateSynth();
+
+            function playAudio() {
+                var tempoValue = document.getElementById("tempo").value;
+
+                var audioContext = new window.AudioContext();
+                audioContext.resume().then(function () {
+                    return midiBuffer.init({
+                        visualObj: visualObj,
+                        audioContext: audioContext,
+                        // millisecondsPerMeasure: visualObj.millisecondsPerMeasure(),
+                        options: {
+                            qpm: tempoValue ? tempoValue : 120
+                        }
+                    }).then(function (response) {
+                        return midiBuffer.prime();
+                    }).then(function () {
+                        midiBuffer.start();
+                        return Promise.resolve();
+                    }).catch(function (error) {
+                        console.warn("synth error", error);
+                    });
+                });
+            }
+
+            function stopAudio() {
+                if (midiBuffer) {
+                    midiBuffer.stop()
+                }
+            }
+            var playBtn = document.getElementById("playBtn")
+
+            playBtn.addEventListener("click", function () { playAudio() });
+            var stopBtn = document.getElementById("stopBtn")
+            stopBtn.addEventListener("click", function () { stopAudio() });
+        }
+
+
+
+
+    </script>
+</head>
+
+<body>
+    <div class="ControlArea">
+        <input type="button" , value="Play Music" , id="playBtn" />
+        <input type="number" id="tempo" , placeholder="tempo:120" />
+        <input type="button" , value="Stop Music" , id="stopBtn" />
+        <input type="button" , value="Print" , id="printBtn" , onclick="window.print()">
+        <a href="index.html" class="back">返回</a>
+    </div>
+    <div class="NotationArea">
+        <div id="notation">
+        </div>
+    </div>
+</body>
+
+</html>
