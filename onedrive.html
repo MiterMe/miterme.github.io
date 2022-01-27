@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style-screen.css" , media="screen">
+    <link rel="stylesheet" href="css/style-print.css" , media="print">
+    <script src="js/tools.js"></script>
+    <script>
+        function readQuery() {
+            var args = Strings.tokv(location.href);
+            document.getElementById("value").innerHTML = "<h1>"+ args.code +"</h1>";
+        }
+    </script>
+</head>
+<body onload="readQuery();">
+    <div id="value"></div>
+</body>
+</html>
+
